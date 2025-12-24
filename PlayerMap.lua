@@ -50,14 +50,38 @@ end
 -- the "LifeBoatAPI" is included by default in /_build/libs/ - you can use require("LifeBoatAPI") to get this, and use all the LifeBoatAPI.<functions>!
 
 ticks = 0
+way_x_screen = 0
+way_y_screen = 0
 function onTick()
-    zoom = input.getNumber(1)
-    x = input.getNumber(2)
+    zoom = input.getNumber(19)
+    x = input.getNumber(1)
     y = input.getNumber(3)
+    way_x = input.getNumber(20)
+    way_y = input.getNumber(21)
+    speed = input.getNumber(13)
+    cmp = math.rad((input.getNumber(17)*360))*(-1)-(math.rad(90))
+    dist = (((way_x-x)^2)+((way_y-y)^2))^0.5
+    eta = dist/speed
 end
 
 function onDraw()
     w = screen.getWidth()
     h = screen.getHeight()
+    screen.setColor(255,0,0)
     screen.drawMap(x, y, zoom)
+    screen.drawCircle(w/2,h/2,2)
+    screen.drawText(0,0,math.floor(speed).." m/s")
+    if (dist > 999) then
+        screen.drawText(0,6,"Dist to WP: "..math.floor((dist/1000)).." km")
+    else
+        screen.drawText(0,6,"Dist to WP: "..math.floor(dist).." m")
+    end
+    if (speed > 10) then
+        screen.drawText(0,12,"ETA: "..math.floor(eta).." s")
+    end
+    screen.
+    way_x_screen, way_y_screen = map.mapToScreen(x, y, zoom, w, h, way_x, way_y)
+    screen.drawCircle(way_x_screen, way_y_screen, 3)
+    screen.drawLine(w/2,h/2,way_x_screen, way_y_screen)
+    screen.drawLine(w/2,h/2,(w/2)+(math.cos(cmp)*w),(h/2)+(math.sin(cmp)*w))
 end
