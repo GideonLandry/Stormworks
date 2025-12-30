@@ -63,25 +63,25 @@ function onTick()
     dist = (((way_x-x)^2)+((way_y-y)^2))^0.5
     eta = dist/speed
 end
-
+-- Draw the map centered at (x, y) with the given zoom level
 function onDraw()
     w = screen.getWidth()
     h = screen.getHeight()
     screen.setColor(255,0,0)
     screen.drawMap(x, y, zoom)
-    screen.drawCircle(w/2,h/2,2)
-    screen.drawText(0,0,math.floor(speed).." m/s")
+    screen.drawText(0,0,string.format("%.2f m/s", speed))
     if (dist > 999) then
-        screen.drawText(0,6,"Dist to WP: "..math.floor((dist/1000)).." km")
+        screen.drawText(0,6,"WP Dist: "..string.format("%.2f km",(dist/1000)))
     else
-        screen.drawText(0,6,"Dist to WP: "..math.floor(dist).." m")
+        screen.drawText(0,6,"WP Dist: "..string.format("%.2f m", dist))
     end
     if (speed > 10) then
-        screen.drawText(0,12,"ETA: "..math.floor(eta).." s")
+        screen.drawText(0,12,"ETA: "..string.format("%.2f  s", eta))
     end
-    screen.
     way_x_screen, way_y_screen = map.mapToScreen(x, y, zoom, w, h, way_x, way_y)
     screen.drawCircle(way_x_screen, way_y_screen, 3)
     screen.drawLine(w/2,h/2,way_x_screen, way_y_screen)
-    screen.drawLine(w/2,h/2,(w/2)+(math.cos(cmp)*w),(h/2)+(math.sin(cmp)*w))
+    screen.drawTriangle((w/2)+(math.cos(cmp+math.rad(150))*7),(h/2)+(math.sin(cmp+math.rad(150))*7),
+                              (w/2)+(math.cos(cmp+math.rad(210))*7),(h/2)+(math.sin(cmp+math.rad(210))*7),
+                              (w/2)+(math.cos(cmp)*8),(h/2)+(math.sin(cmp)*8))
 end

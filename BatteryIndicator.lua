@@ -49,27 +49,29 @@ end
 -- try require("Folder.Filename") to include code from another file in this, so you can store code in libraries
 -- the "LifeBoatAPI" is included by default in /_build/libs/ - you can use require("LifeBoatAPI") to get this, and use all the LifeBoatAPI.<functions>!
 
-ticks = 0
+
 function onTick()
-    zoom = input.getNumber(19)
-    x = input.getNumber(1)
-    y = input.getNumber(3)
-    way_x = input.getNumber(20)
-    way_y = input.getNumber(21)
-    speed = input.getNumber(13)
-    cmp = math.rad((input.getNumber(17)*360))*(-1)-(math.rad(90))
-    dist = (((way_x-x)^2)+((way_y-y)^2))^0.5
-    eta = dist/speed
+    --battery charge
+    bc = input.getNumber(1)
+
+
+    -- calculate battery level (0-8)
+    bl = math.ceil(bc * 8)
+    
+    bar = 0
+    bar = barValue(bl,bar)
+    output.setNumber(1,bar)
 end
 
-function onDraw()
-    w = screen.getWidth()
-    h = screen.getHeight()
-    screen.setColor(0,255,0)
-    screen.drawText(0,0,"Jet Pilot Display")
-    screen.drawCircle((w-(w/6)), (h/2), h/2)
-    screen.drawTriangle((w - w/6)+(math.cos(cmp+math.rad(150))*7),(h/2)+(math.sin(cmp+math.rad(150))*7),
-                              (w - w/6)+(math.cos(cmp+math.rad(210))*7),(h/2)+(math.sin(cmp+math.rad(210))*7),
-                              (w - w/6)+(math.cos(cmp)*8),(h/2)+(math.sin(cmp)*8))
-    screen.drawText((w - (w/3)),(h - 6),"Waypoint")
-end
+
+function barValue(bVal,fVal)
+
+    if(bVal > 0 and bVal < 8) then
+        fVal = fVal + 2^bl
+        barValue(bVal - 1,fVal)    
+    elseif (bl >= 8) then
+        fVal = 511
+    end
+
+    return fVal
+end   
