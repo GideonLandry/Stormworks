@@ -1,0 +1,46 @@
+-- Author: Gideon Landry (Dead Moose)
+-- GitHub: https://github.com/GideonLandry/Stormworks
+-- Workshop: https://steamcommunity.com/profiles/76561198077245598/myworkshopfiles/?appid=573090
+--
+--- Developed using LifeBoatAPI - Stormworks Lua plugin for VSCode - https://code.visualstudio.com/download (search "Stormworks Lua with LifeboatAPI" extension)
+--- If you have any issues, please report them here: https://github.com/nameouschangey/STORMWORKS_VSCodeExtension/issues - by Nameous Changey
+
+function onTick()
+    pid = pid(1.2,0.0001,0.1)
+	idle = 5
+	max_rps = 20
+	throttle = input.getNumber(4)
+	rps_in = input.getNumber(1)
+	rps_set = throttle*max_rps
+
+	if rps_set < idle then
+		rps_set = idle
+	end
+	
+	value_out = pid_test:run(rps_set,rps_in)
+	output.setNumber(1,value_out)
+end
+
+-- code below is from https://www.reddit.com/r/Stormworks/comments/kei6pg/lua_code_for_a_basic_pid/
+
+function pid(p,i,d)
+return{p=p,i=i,d=d,error=0,derivative=0,integral=0,run=function(self,setpoint,process_variable)
+		local error,derivative
+		local integral = 0
+		error = setpoint-process_variable
+		derivative = error-self.error
+		if math.abs(integral*self.i) < 1 then
+			integral = self.integral+error
+		else
+			integral = integral*0.5
+		end
+		
+		self.error = error
+		self.derivative = derivative
+		self.integral = integral
+		
+		return error*self.p + integral*self.i +derivative*self.d
+	end
+}
+end
+

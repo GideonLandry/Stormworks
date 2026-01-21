@@ -54,23 +54,26 @@ function onTick()
     --battery charge
     bc = input.getNumber(1)
 
-
     -- calculate battery level (0-8)
-    bl = math.ceil(bc * 8)
-    
-    bar = 0
-    bar = barValue(bl,bar)
+    bl = math.floor(bc * 8) 
+
+    -- set bar output
+    bar = barValue(bl)
     output.setNumber(1,bar)
 end
 
+-- recursive function to calculate bar value
+function barValue(bVal)
 
-function barValue(bVal,fVal)
+    fVal = 1
 
-    if(bVal > 0 and bVal < 8) then
-        fVal = fVal + 2^bl
-        barValue(bVal - 1,fVal)    
-    elseif (bl >= 8) then
-        fVal = 511
+    if (bVal > 8) then
+        bVal = 8
+    end
+
+    if(bVal > 0 and bVal <= 8) then
+        fVal = barValue(bVal - 1)    
+        fVal = fVal + 2^(bVal)
     end
 
     return fVal
